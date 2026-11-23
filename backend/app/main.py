@@ -32,12 +32,3 @@ app.add_middleware(
 )
 
 app.include_router(mw_router, prefix=settings.API_V1_PREFIX)
-
-
-@app.get("/")
-async def root() -> dict[str, str]:
-    return {
-        "message": "Welcome to AI Video Platform API",
-        "docs": "/docs",
-        "version": "0.1.0",
-    }
