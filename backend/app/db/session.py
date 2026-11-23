@@ -1,50 +1,47 @@
-from collections.abc import AsyncGenerator
+from collections.abc import Generator
 
-from sqlalchemy import text
+from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 from sqlalchemy.pool import NullPool
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import get_settings
 
 settings = get_settings()
 
 DATABASE_URL = URL.create(
-    drivername=settings.drivername,
+    drivername="postgresql+psycopg2",
     username=settings.DB_USER,
     password=settings.DB_PASSWORD,
     host=settings.DB_HOST,
     port=settings.DB_PORT,
     database=settings.DB_NAME,
-    query={"ssl": "require"},
+    query={"sslmode": "require"},
 )
 
-engine = create_async_engine(
+engine = create_engine(
     DATABASE_URL,
     echo=False,
     poolclass=NullPool,
 )
 
-AsyncSessionLocal = async_sessionmaker(
+SessionLocal = sessionmaker(
     bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
+    class_=Session,
+    autoflush=False,
+    autocommit=False,
 )
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with AsyncSessionLocal() as session:
+def get_db() -> Generator[Session, None, None]:
+    with SessionLocal() as session:
         yield session
 
 
-async def check_database_connection() -> None:
-    async with engine.connect() as connection:
-        await connection.execute(text("SELECT 1"))
+def check_database_connection() -> None:
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
 
 
-async def close_database_connection() -> None:
-    await engine.dispose()
+def close_database_connection() -> None:
+    engine.dispose()

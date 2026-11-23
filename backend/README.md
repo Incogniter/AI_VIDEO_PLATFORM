@@ -1,6 +1,6 @@
 # Database setup
 
-Minimal FastAPI health check and async SQLAlchemy connection to Supabase PostgreSQL. SQLAlchemy model metadata targets the private `app` schema; no application tables are defined yet.
+Minimal FastAPI health check and SQLAlchemy connection to Supabase PostgreSQL using psycopg2. SQLAlchemy model metadata targets the private `app` schema; no application tables are defined yet.
 
 ## Local setup (PowerShell)
 

@@ -17,7 +17,6 @@ class Settings:
     DB_PORT = int(os.getenv("port", "5432"))
     DB_NAME = os.getenv("dbname", "postgres")
     SUPABASE_DB_SCHEMA = os.getenv("SUPABASE_DB_SCHEMA", "app")
-    drivername = os.getenv("drivername", "postgresql+asyncpg")
 
     @property
     def cors_origins(self) -> list[str]:

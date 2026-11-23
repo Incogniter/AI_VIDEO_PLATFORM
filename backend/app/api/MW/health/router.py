@@ -14,9 +14,9 @@ async def health_check() -> dict[str, str]:
 
 
 @router.get("/health/db")
-async def database_health() -> dict[str, str]:
+def database_health() -> dict[str, str]:
     try:
-        await check_database_connection()
+        check_database_connection()
     except Exception as exc:
         logger.exception("Database connection failed")
         raise HTTPException(

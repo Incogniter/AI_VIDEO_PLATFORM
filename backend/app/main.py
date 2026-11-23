@@ -13,7 +13,7 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     yield
-    await close_database_connection()
+    close_database_connection()
 
 
 app = FastAPI(
