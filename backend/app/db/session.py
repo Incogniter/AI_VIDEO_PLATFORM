@@ -1,6 +1,8 @@
 from collections.abc import AsyncGenerator
 
 from sqlalchemy import text
+from sqlalchemy.engine import URL
+from sqlalchemy.pool import NullPool
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -11,13 +13,20 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
+DATABASE_URL = URL.create(
+    drivername=settings.drivername,
+    username=settings.DB_USER,
+    password=settings.DB_PASSWORD,
+    host=settings.DB_HOST,
+    port=settings.DB_PORT,
+    database=settings.DB_NAME,
+    query={"ssl": "require"},
+)
+
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    DATABASE_URL,
     echo=False,
-    pool_pre_ping=True,
-    pool_size=settings.DB_POOL_SIZE,
-    max_overflow=settings.DB_MAX_OVERFLOW,
-    pool_timeout=settings.DB_POOL_TIMEOUT,
+    poolclass=NullPool,
 )
 
 AsyncSessionLocal = async_sessionmaker(

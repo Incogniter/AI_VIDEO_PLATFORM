@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from urllib.parse import quote
 
 from dotenv import load_dotenv
 
@@ -12,18 +11,13 @@ class Settings:
     APP_NAME = os.getenv("APP_NAME", "AI Video Platform API")
     API_V1_PREFIX = os.getenv("API_V1_PREFIX", "/Synapse")
     BACKEND_CORS_ORIGINS = os.getenv("BACKEND_CORS_ORIGINS", "")
-    DATABASE_URL = (
-        "postgresql+asyncpg://"
-        f"{os.getenv('SUPABASE_DB_USER', 'postgres')}:"
-        f"{quote(os.getenv('SUPABASE_DB_PASSWORD', ''), safe='')}@"
-        f"{os.getenv('SUPABASE_DB_HOST', '')}:"
-        f"{os.getenv('SUPABASE_DB_PORT', '5432')}/"
-        f"{os.getenv('SUPABASE_DB_NAME', 'postgres')}?ssl=require"
-    )
+    DB_USER = os.getenv("user", "")
+    DB_PASSWORD = os.getenv("password", "")
+    DB_HOST = os.getenv("host", "")
+    DB_PORT = int(os.getenv("port", "5432"))
+    DB_NAME = os.getenv("dbname", "postgres")
     SUPABASE_DB_SCHEMA = os.getenv("SUPABASE_DB_SCHEMA", "app")
-    DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "5"))
-    DB_MAX_OVERFLOW = int(os.getenv("DB_MAX_OVERFLOW", "5"))
-    DB_POOL_TIMEOUT = int(os.getenv("DB_POOL_TIMEOUT", "30"))
+    drivername = os.getenv("drivername", "postgresql+asyncpg")
 
     @property
     def cors_origins(self) -> list[str]:
