@@ -3,7 +3,7 @@ name: Build and Push Backend Image
 on:
   push:
     branches:
-      # - feature/backend-MW
+      - MW/Production
     paths:
       - "backend/**"
       - ".github/workflows/deploy-backend.yml"

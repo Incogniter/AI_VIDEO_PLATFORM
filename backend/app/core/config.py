@@ -1,11 +1,10 @@
 import os
-# from pathlib import Path
-
-# from dotenv import load_dotenv
+from pathlib import Path
+from dotenv import load_dotenv
 from sqlalchemy.engine import URL
 
-# ROOT_DIR = Path(__file__).resolve().parents[2]
-# load_dotenv(ROOT_DIR / ".env")
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_DIR / ".env")
 
 
 class Settings:
@@ -17,6 +16,11 @@ class Settings:
     DB_HOST = os.getenv("DB_HOST", "")
     DB_PORT = int(os.getenv("DB_PORT", "5432"))
     DB_NAME = os.getenv("DB_NAME", "postgres")
+    SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+    SUPABASE_PUBLISHABLE_KEY = os.getenv(
+        "SUPABASE_PUBLISHABLE_KEY",
+        os.getenv("SUPABASE_ANON_KEY", ""),
+    )
     DATABASE_URL = URL.create(
         drivername="postgresql+psycopg2",
         username=DB_USER,
