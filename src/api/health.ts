@@ -1,4 +1,5 @@
 import { apiClient } from './client'
+import { API_ROUTES } from '../constants/app'
 
 export type HealthStatus = {
   status: 'healthy' | string
@@ -6,6 +7,6 @@ export type HealthStatus = {
 }
 
 export async function getHealthStatus() {
-  const response = await apiClient.get<HealthStatus>('/health')
+  const response = await apiClient.get<HealthStatus>(API_ROUTES.health)
   return response.data
 }

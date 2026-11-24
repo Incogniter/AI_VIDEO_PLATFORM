@@ -7,6 +7,9 @@ import { ApiError } from '../../api/client'
 import { useVideos } from '../../hooks/useVideos'
 import { formatRelativeAge } from '../../utils/formatRelativeAge'
 import VideoGridSkeleton from '../../components/VideoGridSkeleton/VideoGridSkeleton'
+import { useAuth } from '../../auth/AuthProvider'
+import { getDisplayName } from '../../auth/profile'
+import { formatToday, getGreeting } from '../../utils/greeting'
 import './DiscoverPage.css'
 
 export default function DiscoverPage() {
@@ -14,6 +17,8 @@ export default function DiscoverPage() {
   const [liked, setLiked] = useState<string[]>([])
   const [searchParams] = useSearchParams()
   const videosQuery = useVideos()
+  const { user } = useAuth()
+  const displayName = getDisplayName(user)
   const feed = videosQuery.data?.items ?? videos
   const featuredVideo = feed.find((video) => video.featured) ?? feed[0]
   const search = (searchParams.get('q') || '').toLowerCase()
@@ -30,8 +35,7 @@ export default function DiscoverPage() {
   return (
     <div className="discover-page">
       <div className="welcome-row">
-        <div><p className="eyebrow">TUESDAY, NOVEMBER 24</p><h1>Good afternoon, Abino</h1></div>
-        <button className="avatar avatar-user welcome-avatar" aria-label="Account profile">AR</button>
+        <div><p className="eyebrow">{formatToday()}</p><h1>{getGreeting()}, {displayName}</h1></div>
       </div>
 
       <div className="category-row" role="tablist" aria-label="Video categories">

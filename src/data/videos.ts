@@ -29,4 +29,6 @@ export const videos: Video[] = [
   },
 ]
 
-export const categories = ['All', 'For you', 'Technology', 'Design', 'Science', 'Documentary', 'Gaming', 'Music']
+export const categories = VIDEO_CATEGORIES
+import { VIDEO_CATEGORIES } from '../constants/app'
+

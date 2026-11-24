@@ -1,0 +1,193 @@
+.auth-dialog-paper {
+  color: var(--text);
+  background: #131618 !important;
+  border: 1px solid #303536;
+  border-radius: 16px !important;
+}
+
+.auth-dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 8px !important;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font: 800 16px Manrope, sans-serif;
+  letter-spacing: -.5px;
+}
+
+.auth-brand .brand-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+}
+
+.auth-dialog-content {
+  padding: 14px 24px 24px !important;
+}
+
+.auth-intro {
+  margin: 4px 0 19px;
+}
+
+.auth-intro .eyebrow {
+  margin: 0 0 8px;
+}
+
+.auth-intro h2 {
+  margin: 0;
+  font: 700 22px Manrope, sans-serif;
+  letter-spacing: -.6px;
+}
+
+.auth-intro>p:last-child {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.google-auth-button.MuiButton-root {
+  min-height: 44px;
+  color: var(--text);
+  border-color: #383e3f;
+  font-size: 11px;
+}
+
+.google-g {
+  margin-right: 9px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #8db8ff;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 15px;
+  color: #818887;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: #2c3032;
+}
+
+.auth-method-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 9px;
+  background: #0d0f10;
+}
+
+.auth-method-toggle button {
+  min-height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.auth-method-toggle button.selected {
+  color: var(--text);
+  background: #24282a;
+}
+
+.auth-form {
+  display: grid;
+  gap: 13px;
+  margin-top: 14px;
+}
+
+.auth-form .form-field {
+  position: relative;
+  display: grid;
+  gap: 7px;
+}
+
+.auth-form .form-field>span {
+  color: #d4d8d3;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.auth-form .form-field input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #323738;
+  border-radius: 8px;
+  outline: none;
+  background: #0e1011;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.auth-form .form-field input:focus {
+  border-color: #849955;
+  box-shadow: 0 0 0 3px #c7f36b14;
+}
+
+.auth-form .form-field input::placeholder {
+  color: #6f7775;
+}
+
+.auth-form .form-field small {
+  color: #858b89;
+  font-size: 9px;
+}
+
+.auth-form .MuiButton-contained {
+  color: #171a11;
+  background: var(--lime);
+  font-size: 11px;
+}
+
+.auth-back-button,
+.auth-resend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.auth-resend {
+  margin-top: 12px;
+  color: var(--lime);
+}
+
+.auth-error {
+  margin: 14px 0 0;
+  color: #ffaaa4;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.auth-footnote {
+  margin: 18px 0 0;
+  color: #757c7a;
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: center;
+}

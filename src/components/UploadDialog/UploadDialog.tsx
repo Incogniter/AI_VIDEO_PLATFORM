@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FileVideo2, Upload, X } from 'lucide-react'
 import { apiClient, ApiError } from '../../api/client'
+import { API_ROUTES, UPLOAD_LIMITS } from '../../constants/app'
 import './UploadDialog.css'
 
 type Props = { open: boolean; onClose: () => void }
@@ -13,7 +14,7 @@ async function uploadVideo({ file, title, description }: UploadFields) {
   form.append('file', file)
   form.append('title', title.trim())
   form.append('description', description.trim())
-  const response = await apiClient.post('/videos', form)
+  const response = await apiClient.post(API_ROUTES.videos, form)
   return response.data
 }
 
@@ -66,14 +67,14 @@ export default function UploadDialog({ open, onClose }: Props) {
 
           <label className="form-field">
             <span>Video title <i>*</i></span>
-            <input value={title} onChange={(event) => setTitle(event.target.value)} required maxLength={120} placeholder="Give your video a clear title" />
-            <small>{title.length}/120</small>
+            <input value={title} onChange={(event) => setTitle(event.target.value)} required maxLength={UPLOAD_LIMITS.title} placeholder="Give your video a clear title" />
+            <small>{title.length}/{UPLOAD_LIMITS.title}</small>
           </label>
 
           <label className="form-field">
             <span>Description <i>*</i></span>
-            <textarea value={description} onChange={(event) => setDescription(event.target.value)} required maxLength={2000} rows={4} placeholder="What should viewers know about this video?" />
-            <small>{description.length}/2000</small>
+            <textarea value={description} onChange={(event) => setDescription(event.target.value)} required maxLength={UPLOAD_LIMITS.description} rows={4} placeholder="What should viewers know about this video?" />
+            <small>{description.length}/{UPLOAD_LIMITS.description}</small>
           </label>
 
           <p className="upload-metadata-note">Upload date and video duration are recorded by the platform when the video is processed.</p>

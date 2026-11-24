@@ -1,0 +1,114 @@
+.profile-page {
+  max-width: 760px;
+  padding-top: 8px;
+}
+
+.profile-page>.eyebrow {
+  margin: 0 0 9px;
+}
+
+.profile-page h1 {
+  margin: 0;
+  font: 700 26px Manrope, sans-serif;
+  letter-spacing: -.8px;
+}
+
+.profile-subtitle {
+  margin: 9px 0 24px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.profile-card {
+  max-width: 560px;
+  padding: 22px;
+  border: 1px solid #292e2f;
+  border-radius: 15px;
+  background: #121416;
+}
+
+.profile-identity {
+  margin: -58px 0 26px 88px;
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.profile-identity strong {
+  font-size: 13px;
+}
+
+.profile-identity span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.backend-auth-status {
+  margin: 0;
+  color: #909794;
+  font-size: 10px;
+}
+
+.backend-auth-status.verified {
+  color: var(--lime);
+}
+
+.backend-auth-status.failed {
+  color: #e9a096;
+}
+
+.profile-edit-form {
+  display: grid;
+  gap: 13px;
+  margin-top: 27px;
+}
+
+.profile-edit-form .form-field {
+  display: grid;
+  gap: 7px;
+}
+
+.profile-edit-form .form-field>span {
+  color: #d4d8d3;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.profile-edit-form input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #323738;
+  border-radius: 8px;
+  outline: none;
+  background: #0e1011;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 9px;
+}
+
+.profile-actions .MuiButton-contained {
+  color: #171a11;
+  background: var(--lime);
+}
+
+.profile-success,
+.profile-error {
+  margin: 0;
+  font-size: 10px;
+}
+
+.profile-success {
+  color: var(--lime);
+}
+
+.profile-error {
+  color: #ffaaa4;
+}

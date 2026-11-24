@@ -16,6 +16,13 @@
   border: 0;
 }
 
+.profile-avatar-button {
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
 .brand {
   height: 42px;
   display: flex;

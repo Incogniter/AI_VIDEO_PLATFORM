@@ -1,7 +1,9 @@
 import axios from 'axios'
+import { API_BASE_URL } from '../constants/app'
+import { supabase } from '../auth/supabase'
 const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
 export const apiClient = axios.create({
-  baseURL: (configuredBaseUrl || 'http://localhost:8000/Synapse').replace(/\/+$/, ''),
+  baseURL: (configuredBaseUrl || API_BASE_URL).replace(/\/+$/, ''),
   timeout: 15_000,
 })
 
@@ -15,16 +17,17 @@ export class ApiError extends Error {
   }
 }
 
-apiClient.interceptors.request.use((config) => {
+apiClient.interceptors.request.use(async (config) => {
   config.headers.set('Accept', 'application/json')
 
   let token: string | null = null
   try {
-    token = typeof window !== 'undefined'
-      ? window.localStorage.getItem('streamline_access_token')
-      : null
+    if (supabase) {
+      const { data } = await supabase.auth.getSession()
+      token = data.session?.access_token ?? null
+    }
   } catch {
-    // Requests remain public until the authentication flow is configured.
+    // A failed session lookup leaves this request unauthenticated.
   }
 
   if (token) config.headers.set('Authorization', `Bearer ${token}`)
