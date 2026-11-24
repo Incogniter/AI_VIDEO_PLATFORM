@@ -21,6 +21,7 @@ app = FastAPI(
     version="0.1.0",
     description="Backend API for the AI Video & Communication Platform",
     lifespan=lifespan,
+    openapi_url=None
 )
 
 app.add_middleware(
