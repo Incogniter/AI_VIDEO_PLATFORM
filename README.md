@@ -26,6 +26,10 @@ Upload is opened from the navigation menu. It submits a multipart `POST /videos`
 
 The other navigation areas are scaffolded for incremental API integration.
 
+## Docker deployment
+
+The root `Dockerfile` builds the Vite app with Node and serves `dist` through Nginx. Nginx falls back to `index.html` for React Router paths, serves the runtime API configuration without caching, and listens on Render's `PORT` (default `10000`). The image build accepts `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` build arguments; pass the public Supabase values through GitHub Actions when building the image. `public/runtime-config.json` selects localhost for development and the Render backend for production.
+
 ## Source structure
 
 - `src/components/<ComponentName>/` contains a component and its colocated stylesheet.
