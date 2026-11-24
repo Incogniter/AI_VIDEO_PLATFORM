@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from sqlalchemy.engine import URL
 
-# ROOT_DIR = Path(__file__).resolve().parents[2]
-# load_dotenv(ROOT_DIR / ".env")
+ROOT_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(ROOT_DIR / ".env")
 
 
 class Settings:
@@ -27,6 +27,7 @@ class Settings:
         query={"sslmode": "require"},
     )
     SUPABASE_DB_SCHEMA = os.getenv("SUPABASE_DB_SCHEMA", "app")
+    
 
     @property
     def cors_origins(self) -> list[str]:
@@ -38,6 +39,13 @@ class Settings:
 
 
 settings = Settings()
+print("=== DATABASE CONFIG ===")
+print("DB_USER:", settings.DB_USER)
+print("DB_HOST:", settings.DB_HOST)
+print("DB_PORT:", settings.DB_PORT)
+print("DB_NAME:", settings.DB_NAME)
+print("DB_PASSWORD_SET:", settings.DB_PASSWORD)
+print("=======================")
 
 
 def get_settings() -> Settings:
