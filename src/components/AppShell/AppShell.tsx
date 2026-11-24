@@ -1,10 +1,11 @@
-import { Suspense, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useState, type FormEvent } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Bell, Compass, House, Menu, MessageCircle, Plus, Search, UserRound, X } from 'lucide-react'
 import { useApiHealth } from '../../hooks/useApiHealth'
-import UploadDialog from '../UploadDialog/UploadDialog'
 import PageSkeleton from '../PageSkeleton/PageSkeleton'
 import './AppShell.css'
+
+const UploadDialog = lazy(() => import('../UploadDialog/UploadDialog'))
 
 const links: { label: string; to?: string; icon: typeof House; badge?: string }[] = [
   { label: 'Home', to: '/', icon: House },
@@ -87,7 +88,7 @@ export default function AppShell() {
             : <NavLink key={label} to={to!} end={to === '/'} className={({ isActive }) => `mobile-nav-item${isActive ? ' active' : ''}`}><Icon size={20} /><span>{label}</span></NavLink>)}
         </nav>
       </div>
-      <UploadDialog open={uploadOpen} onClose={() => setUploadOpen(false)} />
+      {uploadOpen && <Suspense fallback={null}><UploadDialog open onClose={() => setUploadOpen(false)} /></Suspense>}
     </div>
   )
 }

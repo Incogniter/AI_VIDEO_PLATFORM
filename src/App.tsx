@@ -1,7 +1,6 @@
 import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from './components/AppShell/AppShell'
-import PageSkeleton from './components/PageSkeleton/PageSkeleton'
 
 const DiscoverPage = lazy(() => import('./pages/DiscoverPage/DiscoverPage'))
 const ExplorePage = lazy(() => import('./pages/ExplorePage/ExplorePage'))
