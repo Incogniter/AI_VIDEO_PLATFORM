@@ -11,10 +11,9 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt
-Copy-Item .env.example .env
 ```
 
-Edit `.env` with the database credentials and endpoint from Supabase. Keep `.env` and the database password out of source control. Use the Session Pooler endpoint if the direct database endpoint is unreachable on an IPv4-only network.
+Set `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`, and `DB_NAME` in `.env` using the connection details from Supabase. Keep `.env` and the database password out of source control. The connection should use the Session Pooler endpoint when connecting from an IPv4-only network; the application assembles the SQLAlchemy URL from these settings and requires SSL.
 
 Run the API:
 

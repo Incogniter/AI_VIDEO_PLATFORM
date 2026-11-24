@@ -1,7 +1,6 @@
 from collections.abc import Generator
 
 from sqlalchemy import create_engine, text
-from sqlalchemy.engine import URL
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -9,18 +8,8 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
-DATABASE_URL = URL.create(
-    drivername="postgresql+psycopg2",
-    username=settings.DB_USER,
-    password=settings.DB_PASSWORD,
-    host=settings.DB_HOST,
-    port=settings.DB_PORT,
-    database=settings.DB_NAME,
-    query={"sslmode": "require"},
-)
-
 engine = create_engine(
-    DATABASE_URL,
+    settings.DATABASE_URL,
     echo=False,
     poolclass=NullPool,
 )
