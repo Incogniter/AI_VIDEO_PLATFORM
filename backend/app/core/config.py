@@ -16,6 +16,11 @@ class Settings:
     DB_HOST = os.getenv("DB_HOST", "")
     DB_PORT = int(os.getenv("DB_PORT", "5432"))
     DB_NAME = os.getenv("DB_NAME", "postgres")
+    SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
+    SUPABASE_PUBLISHABLE_KEY = os.getenv(
+        "SUPABASE_PUBLISHABLE_KEY",
+        os.getenv("SUPABASE_ANON_KEY", ""),
+    )
     DATABASE_URL = URL.create(
         drivername="postgresql+psycopg2",
         username=DB_USER,
