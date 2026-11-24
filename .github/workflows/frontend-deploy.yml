@@ -58,10 +58,10 @@ jobs:
 
       - name: Trigger Render deployment
         env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL_FE }}
         run: |
           if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "RENDER_DEPLOY_HOOK_URL secret is not configured."
+            echo "RENDER_DEPLOY_HOOK_URL_FE secret is not configured."
             exit 1
           fi
           curl --fail --silent --show-error \
