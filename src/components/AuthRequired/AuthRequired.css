@@ -1,0 +1,42 @@
+.auth-required-page {
+  max-width: 490px;
+  margin: 9vh auto;
+  padding: 36px 28px;
+  border: 1px solid #292e2f;
+  border-radius: 16px;
+  background: #121416;
+  text-align: center;
+}
+
+.auth-required-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: var(--lime);
+  background: #242c1c;
+}
+
+.auth-required-page .eyebrow {
+  margin: 0 0 10px;
+}
+
+.auth-required-page h1 {
+  margin: 0;
+  font: 700 23px Manrope, sans-serif;
+  letter-spacing: -.6px;
+}
+
+.auth-required-page p:not(.eyebrow) {
+  margin: 10px 0 22px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.auth-required-page .MuiButton-root {
+  color: #171a11;
+  background: var(--lime);
+}

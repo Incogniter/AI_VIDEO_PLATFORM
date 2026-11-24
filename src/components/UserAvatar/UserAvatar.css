@@ -1,0 +1,18 @@
+.user-avatar {
+  overflow: hidden;
+  background: linear-gradient(145deg, #dbaf7c, #976d52);
+  color: #251f15;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.user-avatar-large {
+  width: 72px;
+  height: 72px;
+  font-size: 20px;
+}

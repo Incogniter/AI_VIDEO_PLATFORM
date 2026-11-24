@@ -1,0 +1,65 @@
+.placeholder-page h1 {
+  font: 700 26px Manrope,sans-serif;
+  letter-spacing: -.9px;
+  margin: 0;
+}
+
+.placeholder-page {
+  max-width: 780px;
+  padding-top: 15px;
+}
+
+.placeholder-page .eyebrow {
+  margin: 0 0 10px;
+}
+
+.placeholder-page>p:not(.eyebrow) {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.placeholder-card {
+  margin-top: 35px;
+  padding: 20px;
+  max-width: 560px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--panel);
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.placeholder-card>div {
+  flex: 1;
+}
+
+.placeholder-card strong {
+  font-size: 12px;
+}
+
+.placeholder-card p {
+  margin: 5px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.placeholder-card .text-link {
+  white-space: nowrap;
+}
+
+@media (max-width:760px) {
+  .placeholder-page {
+    padding-top: 5px;
+  }
+  .placeholder-page h1 {
+    font-size: 23px;
+  }
+  .placeholder-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .placeholder-card .text-link {
+    margin-left: 44px;
+  }
+}
