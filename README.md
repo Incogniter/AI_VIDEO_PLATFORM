@@ -18,7 +18,7 @@ The React app reads the Supabase session and attaches its access token to API re
 npm.cmd run dev
 ```
 
-Set `VITE_API_BASE_URL` in a local `.env` file to the FastAPI API root, including its `/Synapse` prefix. It defaults to `http://localhost:8000/Synapse`; use the deployed Render URL for a hosted frontend.
+Set `VITE_API_BASE_URL` in a local `.env` file to the FastAPI API root, including its `/Synapse` prefix. It defaults to `http://localhost:8000/Synapse`. For deployments where the API URL should change without rebuilding the FE, update `public/runtime-config.json` to `{"apiBaseUrl":"https://your-backend.example.com/Synapse"}`. The FE fetches that file at runtime and falls back to `VITE_API_BASE_URL` if it is missing or invalid. The runtime config is public and must not contain secrets.
 
 Axios request and response interceptors are centralized in `src/api/client.ts`. The app polls `/health` for connection status and requests `/videos` for the Discovery feed. The current backend only implements health and authentication routes, so Discovery shows sample videos until a `/videos` endpoint is added.
 

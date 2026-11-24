@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { API_BASE_URL } from '../constants/app'
+import { getApiBaseUrl } from '../config/api'
 import { supabase } from '../auth/supabase'
-const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
+
 export const apiClient = axios.create({
-  baseURL: (configuredBaseUrl || API_BASE_URL).replace(/\/+$/, ''),
+  baseURL: API_BASE_URL,
   timeout: 15_000,
 })
 
@@ -19,6 +20,7 @@ export class ApiError extends Error {
 
 apiClient.interceptors.request.use(async (config) => {
   config.headers.set('Accept', 'application/json')
+  config.baseURL = await getApiBaseUrl()
 
   let token: string | null = null
   try {

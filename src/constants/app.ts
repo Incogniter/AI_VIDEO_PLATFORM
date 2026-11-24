@@ -9,6 +9,7 @@ export const APP_ROUTES = {
 export const APP_BRAND = 'streamline'
 export const GUEST_NAME = 'Guest'
 export const API_BASE_URL = 'http://localhost:8000/Synapse'
+export const API_RUNTIME_CONFIG_PATH = 'runtime-config.json'
 export const API_ROUTES = { health: '/health', videos: '/videos', currentUser: '/auth/me' } as const
 export const AUTH_PENDING_ROUTE_KEY = 'streamline.auth.pending-route'
 export const UPLOAD_LIMITS = { title: 120, description: 2000 } as const
