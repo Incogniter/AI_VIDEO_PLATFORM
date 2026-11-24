@@ -1,0 +1,171 @@
+.upload-dialog-paper {
+  background: #131618 !important;
+  border: 1px solid #303536;
+  border-radius: 16px !important;
+  color: var(--text);
+}
+
+.upload-dialog-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 14px !important;
+}
+
+.upload-dialog-title>span {
+  display: grid;
+  gap: 8px;
+}
+
+.upload-dialog-title .eyebrow {
+  font-size: 9px;
+}
+
+.upload-dialog-title strong {
+  font: 700 21px Manrope,sans-serif;
+  letter-spacing: -.5px;
+}
+
+.upload-dialog-title .icon-button {
+  margin: -5px -8px 0 0;
+}
+
+.upload-dialog-content {
+  display: grid;
+  gap: 17px;
+  padding: 10px 24px 16px !important;
+}
+
+.file-picker {
+  min-height: 155px;
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px dashed #444b49;
+  border-radius: 12px;
+  background: #171a1c;
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-picker:hover, .file-picker.has-file {
+  border-color: #879d5e;
+  background: #1a1e17;
+}
+
+.file-picker input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+}
+
+.file-picker-icon {
+  color: var(--lime);
+}
+
+.file-picker strong {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.file-picker small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.file-picker-button {
+  margin-top: 3px;
+  padding: 7px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #39403b;
+  border-radius: 7px;
+  color: #d6dbd3;
+  font-size: 10px;
+}
+
+.form-field {
+  position: relative;
+  display: grid;
+  gap: 7px;
+}
+
+.form-field>span {
+  font-size: 11px;
+  font-weight: 650;
+  color: #d4d8d3;
+}
+
+.form-field>span i {
+  color: var(--lime);
+  font-style: normal;
+}
+
+.form-field input, .form-field textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 11px 12px;
+  border: 1px solid #323738;
+  border-radius: 8px;
+  outline: none;
+  background: #0e1011;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.form-field input:focus, .form-field textarea:focus {
+  border-color: #849955;
+  box-shadow: 0 0 0 3px #c7f36b14;
+}
+
+.form-field input::placeholder, .form-field textarea::placeholder {
+  color: #6f7775;
+}
+
+.form-field>small {
+  justify-self: end;
+  margin-top: -3px;
+  color: #747b79;
+  font-size: 9px;
+}
+
+.upload-metadata-note {
+  margin: 0;
+  color: #9a9f9d;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.upload-error {
+  margin: 0;
+  color: #ffaaa4;
+  font-size: 11px;
+}
+
+.upload-dialog-actions {
+  padding: 12px 24px 20px !important;
+  border-top: 1px solid #292e2f;
+}
+
+.upload-dialog-actions .MuiButton-root {
+  font-size: 11px;
+}
+
+.upload-dialog-actions .MuiButton-contained {
+  color: #171a11;
+  background: var(--lime);
+}
+
+.upload-dialog-actions .MuiButton-contained:hover {
+  background: #d5f995;
+}

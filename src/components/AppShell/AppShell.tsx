@@ -1,18 +1,22 @@
-import { useState, type FormEvent } from 'react'
+import { Suspense, useState, type FormEvent } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Bell, Compass, House, Menu, MessageCircle, Plus, Search, UserRound, X } from 'lucide-react'
-import { useApiHealth } from '../hooks/useApiHealth'
+import { useApiHealth } from '../../hooks/useApiHealth'
+import UploadDialog from '../UploadDialog/UploadDialog'
+import PageSkeleton from '../PageSkeleton/PageSkeleton'
+import './AppShell.css'
 
-const links = [
+const links: { label: string; to?: string; icon: typeof House; badge?: string }[] = [
   { label: 'Home', to: '/', icon: House },
   { label: 'Explore', to: '/explore', icon: Compass },
-  { label: 'Upload', to: '/upload', icon: Plus },
+  { label: 'Upload', icon: Plus },
   { label: 'Inbox', to: '/inbox', icon: MessageCircle, badge: '2' },
   { label: 'You', to: '/you', icon: UserRound },
 ]
 
 export default function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false)
+  const [uploadOpen, setUploadOpen] = useState(false)
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
   const apiHealth = useApiHealth()
@@ -32,11 +36,13 @@ export default function AppShell() {
         <div className="nav-label">YOUR SPACE</div>
         <nav className="side-nav" aria-label="Main navigation">
           {links.map(({ label, to, icon: Icon, badge }) => (
-            <NavLink key={label} to={to} end={to === '/'} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
-              <Icon size={19} strokeWidth={1.8} />
-              <span>{label}</span>
-              {badge && <span className="nav-badge">{badge}</span>}
-            </NavLink>
+            label === 'Upload'
+              ? <button key={label} type="button" className="nav-item nav-button" onClick={() => setUploadOpen(true)}><Icon size={19} strokeWidth={1.8} /><span>{label}</span></button>
+              : <NavLink key={label} to={to!} end={to === '/'} className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+                  <Icon size={19} strokeWidth={1.8} />
+                  <span>{label}</span>
+                  {badge && <span className="nav-badge">{badge}</span>}
+                </NavLink>
           ))}
         </nav>
         <div className="sidebar-bottom">
@@ -48,7 +54,7 @@ export default function AppShell() {
             <div className="creator-card-icon"><Plus size={17} /></div>
             <strong>Create something</strong>
             <span>Upload a video and share your perspective.</span>
-            <NavLink to="/upload" className="text-link">Upload video <span>↗</span></NavLink>
+            <button type="button" className="text-link upload-cta" onClick={() => setUploadOpen(true)}>Upload video <span>↗</span></button>
           </div>
           <button className="profile-row" onClick={() => navigate('/you')}>
             <span className="avatar avatar-user">AR</span>
@@ -70,16 +76,18 @@ export default function AppShell() {
             <kbd>⌘ K</kbd>
           </form>
           <div className="topbar-actions">
-            <NavLink to="/upload" className="upload-button"><Plus size={17} /> <span>Upload</span></NavLink>
             <button className="icon-button notification-button" aria-label="Notifications"><Bell size={19} /><i /></button>
             <button className="avatar avatar-user top-avatar" aria-label="Your profile" onClick={() => navigate('/you')}>AR</button>
           </div>
         </header>
-        <main className="page-content"><Outlet /></main>
+        <main className="page-content"><Suspense fallback={<PageSkeleton />}><Outlet /></Suspense></main>
         <nav className="mobile-nav" aria-label="Mobile navigation">
-          {links.map(({ label, to, icon: Icon }) => <NavLink key={label} to={to} end={to === '/'} className={({ isActive }) => `mobile-nav-item${isActive ? ' active' : ''}`}><Icon size={20} /><span>{label}</span></NavLink>)}
+          {links.map(({ label, to, icon: Icon }) => label === 'Upload'
+            ? <button key={label} type="button" className="mobile-nav-item mobile-nav-button" onClick={() => setUploadOpen(true)}><Icon size={20} /><span>{label}</span></button>
+            : <NavLink key={label} to={to!} end={to === '/'} className={({ isActive }) => `mobile-nav-item${isActive ? ' active' : ''}`}><Icon size={20} /><span>{label}</span></NavLink>)}
         </nav>
       </div>
+      <UploadDialog open={uploadOpen} onClose={() => setUploadOpen(false)} />
     </div>
   )
 }

@@ -1,0 +1,24 @@
+.page-skeleton {
+  min-height: calc(100vh - 145px);
+}
+
+.page-skeleton-eyebrow.MuiSkeleton-root {
+  width: 150px;
+  height: 15px;
+  background: #222627;
+}
+
+.page-skeleton-title.MuiSkeleton-root {
+  width: min(360px, 75vw);
+  height: 44px;
+  margin: 5px 0 18px;
+  background: #222627;
+}
+
+.page-skeleton-categories.MuiSkeleton-root {
+  width: min(620px, 90vw);
+  height: 34px;
+  margin-bottom: 30px;
+  background: #171a1b;
+}
+

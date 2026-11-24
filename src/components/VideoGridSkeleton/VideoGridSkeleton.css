@@ -1,0 +1,37 @@
+.video-grid-skeleton {
+  pointer-events: none;
+}
+
+.skeleton-video-card {
+  min-width: 0;
+}
+
+.skeleton-video-cover.MuiSkeleton-root {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #1b1f20;
+  border-radius: 11px;
+  transform: none;
+}
+
+.skeleton-video-info {
+  display: flex;
+  gap: 10px;
+  padding: 12px 1px;
+}
+
+.skeleton-video-avatar.MuiSkeleton-root {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  background: #282d2d;
+}
+
+.skeleton-video-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.skeleton-video-copy .MuiSkeleton-root {
+  background: #252a2b;
+}
