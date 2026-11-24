@@ -2,6 +2,8 @@ import { API_BASE_URL, API_RUNTIME_CONFIG_PATH } from '../constants/app'
 
 type RuntimeConfig = {
   apiBaseUrl?: string
+  development?: { apiBaseUrl?: string }
+  production?: { apiBaseUrl?: string }
 }
 
 let apiBaseUrlPromise: Promise<string> | undefined
@@ -24,8 +26,10 @@ async function fetchRuntimeApiBaseUrl(): Promise<string> {
     if (!response.ok) return fallbackUrl
 
     const config = await response.json() as RuntimeConfig
-    return typeof config.apiBaseUrl === 'string' && config.apiBaseUrl.trim()
-      ? normalizeApiBaseUrl(config.apiBaseUrl)
+    const modeConfig = import.meta.env.DEV ? config.development : config.production
+    const runtimeApiBaseUrl = modeConfig?.apiBaseUrl || config.apiBaseUrl
+    return typeof runtimeApiBaseUrl === 'string' && runtimeApiBaseUrl.trim()
+      ? normalizeApiBaseUrl(runtimeApiBaseUrl)
       : fallbackUrl
   } catch {
     return fallbackUrl

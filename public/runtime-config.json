@@ -1,1 +1,8 @@
-{}
+{
+  "development": {
+    "apiBaseUrl": "http://localhost:8000/Synapse"
+  },
+  "production": {
+    "apiBaseUrl": "https://synapse-backend-65k4.onrender.com/Synapse"
+  }
+}
