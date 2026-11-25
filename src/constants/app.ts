@@ -22,7 +22,7 @@ export const AUTH_CALLBACK_COPY = {
   confirmingTitle: 'Confirming your login',
   confirmingMessage: 'We are confirming this sign-in. Please keep this page open for a moment.',
   confirmedTitle: 'Sign-in confirmed',
-  confirmedMessage: 'Return to your other device. It should now be signed in.',
+  confirmedMessage: 'Your email is verified and this device is signed in. The device where you started should be signed in too. Open Streamline here, or return to that device.',
   failedTitle: 'Sign-in not confirmed',
   failedMessage: 'This sign-in request could not be confirmed. Return to your other device and request a new link.',
   missingSessionMessage: 'This sign-in link could not be confirmed. Request a new link and try again.',

@@ -42,6 +42,10 @@
 .mobile-verify-brand { margin: 0 0 12px; color: #315efb; font-size: 15px; font-weight: 750; letter-spacing: .03em; }
 .mobile-verify-card h1 { margin: 0 0 14px; color: #172033; font-size: clamp(27px, 3vw, 36px); letter-spacing: -.035em; }
 .mobile-verify-message { margin: 0; color: #667085; font-size: 16px; line-height: 1.65; }
+.mobile-verify-continue { min-height: 46px; margin-top: 24px; padding: 0 20px; border: 0; border-radius: 10px; background: #315efb; color: #fff; font: inherit; font-weight: 700; cursor: pointer; transition: background-color .16s ease, transform .16s ease; }
+.mobile-verify-continue:hover { background: #244de0; }
+.mobile-verify-continue:active { transform: translateY(1px); }
+.mobile-verify-continue:focus-visible { outline: 3px solid #8da6ff; outline-offset: 3px; }
 .mobile-verify-next { padding: 26px; border: 1px solid #e9eaf0; border-radius: 16px; background: #f8f9fc; }
 .mobile-verify-step { margin: 0 0 12px; color: #315efb; font-size: 11px; font-weight: 750; letter-spacing: .12em; }
 .mobile-verify-next h2 { margin: 0 0 12px; color: #172033; font-size: 20px; letter-spacing: -.02em; }
