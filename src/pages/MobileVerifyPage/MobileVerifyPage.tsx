@@ -33,18 +33,12 @@ export default function MobileVerifyPage() {
       try {
         await approveDeviceLoginRequest(deviceRequestId)
         setCallbackStatus('confirmed')
-        const nextRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
-        const safeNextRoute = nextRoute?.startsWith('/') && !nextRoute.startsWith('//')
-          ? nextRoute
-          : APP_ROUTES.home
-        window.sessionStorage.removeItem(AUTH_PENDING_ROUTE_KEY)
-        navigate(safeNextRoute, { replace: true })
       } catch {
         setCallbackStatus('failed')
       }
     }
     void approve()
-  }, [isAuthLoading, navigate, requestId, user])
+  }, [isAuthLoading, requestId, user])
 
   useEffect(() => {
     if (isAuthLoading || user || !requestId || started.current) return
@@ -64,6 +58,15 @@ export default function MobileVerifyPage() {
       ? AUTH_CALLBACK_COPY.failedMessage
       : AUTH_CALLBACK_COPY.confirmingMessage
 
+  function continueToStreamline() {
+    const nextRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
+    const safeNextRoute = nextRoute?.startsWith('/') && !nextRoute.startsWith('//')
+      ? nextRoute
+      : APP_ROUTES.home
+    window.sessionStorage.removeItem(AUTH_PENDING_ROUTE_KEY)
+    navigate(safeNextRoute, { replace: true })
+  }
+
   return (
     <main className="mobile-verify-page">
       <section className="mobile-verify-card" aria-live="polite">
@@ -72,12 +75,17 @@ export default function MobileVerifyPage() {
           <p className="mobile-verify-brand">streamline</p>
           <h1>{title}</h1>
           <p className="mobile-verify-message">{message}</p>
+          {callbackStatus === 'confirmed' && (
+            <button type="button" className="mobile-verify-continue" onClick={continueToStreamline}>
+              Open Streamline on this device
+            </button>
+          )}
         </div>
         <aside className="mobile-verify-next">
           <p className="mobile-verify-step">NEXT</p>
-          <h2>{failed ? 'Request a fresh sign-in link' : callbackStatus === 'confirmed' ? 'Return to your other device' : 'Please wait a moment'}</h2>
-          <p>{failed ? 'Go back to the device where you started and send a new sign-in link.' : callbackStatus === 'confirmed' ? 'The device where you requested the sign-in will finish logging in automatically.' : 'We are checking your sign-in request.'}</p>
-          {callbackStatus === 'confirmed' && <p>You can close this page now.</p>}
+          <h2>{failed ? 'Request a fresh sign-in link' : callbackStatus === 'confirmed' ? 'Your session is ready here' : 'Please wait a moment'}</h2>
+          <p>{failed ? 'Go back to the device where you started and send a new sign-in link.' : callbackStatus === 'confirmed' ? 'The device where you started should be signed in too. You can open Streamline on this device or return to your other device.' : 'We are checking your sign-in request.'}</p>
+          {callbackStatus === 'confirmed' && <p>Click the button to open Streamline here.</p>}
         </aside>
       </section>
     </main>
