@@ -10,7 +10,7 @@ const AuthDialogContext = createContext<AuthDialogContextValue | null>(null)
 export function AuthDialogProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, isAuthLoading } = useAuth()
 
   function requestAuth(nextRoute?: string) {
     if (nextRoute) window.sessionStorage.setItem(AUTH_PENDING_ROUTE_KEY, nextRoute)
@@ -30,14 +30,14 @@ export function AuthDialogProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    if (!user) return
+    if (isAuthLoading || !user) return
     setOpen(false)
     const nextRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
     if (!nextRoute) return
     window.sessionStorage.removeItem(AUTH_PENDING_ROUTE_KEY)
     setOpen(false)
     navigate(nextRoute, { replace: true })
-  }, [user, navigate])
+  }, [user, isAuthLoading, navigate])
 
   return (
     <AuthDialogContext.Provider value={{ requestAuth }}>

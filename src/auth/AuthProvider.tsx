@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabase'
 import { APP_ROUTES } from '../constants/app'
@@ -26,6 +26,7 @@ function requireSupabase() {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthLoading, setIsAuthLoading] = useState(true)
+  const authEventVersion = useRef(0)
 
   useEffect(() => {
     if (!supabase) {
@@ -35,13 +36,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let active = true
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      authEventVersion.current += 1
       setUser(session?.user ?? null)
       setIsAuthLoading(false)
     })
 
+    const versionAtSessionLookup = authEventVersion.current
     void supabase.auth.getSession().then(({ data, error }) => {
       if (!active) return
-      if (!error) setUser(data.session?.user ?? null)
+      if (!error && authEventVersion.current === versionAtSessionLookup) {
+        setUser(data.session?.user ?? null)
+      }
       setIsAuthLoading(false)
     }).catch(() => {
       if (active) setIsAuthLoading(false)
