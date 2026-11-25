@@ -31,6 +31,7 @@ export function AuthDialogProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!user) return
+    setOpen(false)
     const nextRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
     if (!nextRoute) return
     window.sessionStorage.removeItem(AUTH_PENDING_ROUTE_KEY)
