@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { approveDeviceLoginRequest } from '../../api/auth'
 import { useAuth } from '../../auth/AuthProvider'
-import { AUTH_CALLBACK_COPY } from '../../constants/app'
+import { AUTH_CALLBACK_COPY, AUTH_CALLBACK_SESSION_WAIT_MS } from '../../constants/app'
 import './MobileVerifyPage.css'
 
 type CallbackStatus = 'confirming' | 'confirmed' | 'failed'
@@ -16,29 +16,36 @@ export default function MobileVerifyPage() {
 
   useEffect(() => {
     if (isAuthLoading || started.current) return
+    if (!requestId) {
+      started.current = true
+      setCallbackStatus('failed')
+      return
+    }
+    const deviceRequestId = requestId
+    // Supabase may finish restoring the verified link session just after the
+    // initial auth-loading state changes. Wait for that auth event before failing.
+    if (!user) return
+
     started.current = true
-    let active = true
+    setCallbackStatus('confirming')
     async function approve() {
-      if (!requestId || !user) {
-        if (active) {
-          setCallbackStatus('failed')
-        }
-        return
-      }
       try {
-        await approveDeviceLoginRequest(requestId)
+        await approveDeviceLoginRequest(deviceRequestId)
         try { await signOutLocal() } catch { /* Approval already succeeded; keep the confirmation message accurate. */ }
-        if (active) setCallbackStatus('confirmed')
+        setCallbackStatus('confirmed')
       } catch {
         try { await signOutLocal() } catch { /* Keep callback errors private from the UI. */ }
-        if (active) {
-          setCallbackStatus('failed')
-        }
+        setCallbackStatus('failed')
       }
     }
     void approve()
-    return () => { active = false }
   }, [isAuthLoading, requestId, signOutLocal, user])
+
+  useEffect(() => {
+    if (isAuthLoading || user || !requestId || started.current) return
+    const timer = window.setTimeout(() => setCallbackStatus('failed'), AUTH_CALLBACK_SESSION_WAIT_MS)
+    return () => window.clearTimeout(timer)
+  }, [isAuthLoading, requestId, user])
 
   const failed = callbackStatus === 'failed'
   const title = callbackStatus === 'confirmed'

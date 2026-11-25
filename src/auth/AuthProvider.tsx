@@ -19,7 +19,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 function requireSupabase() {
-  if (!supabase) throw new Error('Supabase auth is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY.')
+  if (!supabase) throw new Error('Auth is not configured.')
   return supabase
 }
 
