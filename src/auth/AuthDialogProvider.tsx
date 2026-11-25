@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthDialog } from '../components/AuthDialog/AuthDialog'
-import { AUTH_PENDING_ROUTE_KEY } from '../constants/app'
+import { APP_ROUTES, AUTH_PENDING_ROUTE_KEY } from '../constants/app'
 import { useAuth } from './AuthProvider'
 
 type AuthDialogContextValue = { requestAuth: (nextRoute?: string) => void }
@@ -10,6 +10,7 @@ const AuthDialogContext = createContext<AuthDialogContextValue | null>(null)
 export function AuthDialogProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, isAuthLoading } = useAuth()
 
   function requestAuth(nextRoute?: string) {
@@ -32,12 +33,14 @@ export function AuthDialogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isAuthLoading || !user) return
     setOpen(false)
+    // The verification page handles its own navigation after MW approves.
+    if (location.pathname === APP_ROUTES.mobileVerify) return
     const nextRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
     if (!nextRoute) return
     window.sessionStorage.removeItem(AUTH_PENDING_ROUTE_KEY)
     setOpen(false)
     navigate(nextRoute, { replace: true })
-  }, [user, isAuthLoading, navigate])
+  }, [user, isAuthLoading, location.pathname, navigate])
 
   return (
     <AuthDialogContext.Provider value={{ requestAuth }}>

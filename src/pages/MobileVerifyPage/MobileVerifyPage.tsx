@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { approveDeviceLoginRequest } from '../../api/auth'
 import { useAuth } from '../../auth/AuthProvider'
-import { AUTH_CALLBACK_COPY, AUTH_CALLBACK_SESSION_WAIT_MS } from '../../constants/app'
+import { APP_ROUTES, AUTH_CALLBACK_COPY, AUTH_CALLBACK_SESSION_WAIT_MS, AUTH_PENDING_ROUTE_KEY } from '../../constants/app'
 import './MobileVerifyPage.css'
 
 type CallbackStatus = 'confirming' | 'confirmed' | 'failed'
 
 export default function MobileVerifyPage() {
   const [params] = useSearchParams()
-  const { user, isAuthLoading, signOutLocal } = useAuth()
+  const { user, isAuthLoading } = useAuth()
+  const navigate = useNavigate()
   const [callbackStatus, setCallbackStatus] = useState<CallbackStatus>('confirming')
   const started = useRef(false)
   const requestId = params.get('deviceLoginRequestId')
@@ -31,15 +32,19 @@ export default function MobileVerifyPage() {
     async function approve() {
       try {
         await approveDeviceLoginRequest(deviceRequestId)
-        try { await signOutLocal() } catch { /* Approval already succeeded; keep the confirmation message accurate. */ }
         setCallbackStatus('confirmed')
+        const nextRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
+        const safeNextRoute = nextRoute?.startsWith('/') && !nextRoute.startsWith('//')
+          ? nextRoute
+          : APP_ROUTES.home
+        window.sessionStorage.removeItem(AUTH_PENDING_ROUTE_KEY)
+        navigate(safeNextRoute, { replace: true })
       } catch {
-        try { await signOutLocal() } catch { /* Keep callback errors private from the UI. */ }
         setCallbackStatus('failed')
       }
     }
     void approve()
-  }, [isAuthLoading, requestId, signOutLocal, user])
+  }, [isAuthLoading, navigate, requestId, user])
 
   useEffect(() => {
     if (isAuthLoading || user || !requestId || started.current) return

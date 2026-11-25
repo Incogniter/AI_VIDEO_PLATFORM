@@ -13,7 +13,6 @@ type AuthContextValue = {
   verifyPhoneOtp: (phone: string, token: string) => Promise<void>
   updateDisplayName: (displayName: string) => Promise<void>
   signOut: () => Promise<void>
-  signOutLocal: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -104,14 +103,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
-  async function signOutLocal() {
-    const { error } = await requireSupabase().auth.signOut({ scope: 'local' })
-    if (error) throw error
-    setUser(null)
-  }
-
   return (
-    <AuthContext.Provider value={{ user, isAuthLoading, isSupabaseConfigured, signInWithGoogle, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, updateDisplayName, signOut, signOutLocal }}>
+    <AuthContext.Provider value={{ user, isAuthLoading, isSupabaseConfigured, signInWithGoogle, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, updateDisplayName, signOut }}>
       {children}
     </AuthContext.Provider>
   )
