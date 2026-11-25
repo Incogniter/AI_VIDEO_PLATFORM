@@ -18,6 +18,15 @@ export const API_ROUTES = {
   deviceLoginRequests: '/auth/device-login-requests',
 } as const
 export const DEVICE_LOGIN = { channelPrefix: 'device-login:' } as const
+export const AUTH_CALLBACK_COPY = {
+  confirmingTitle: 'Confirming your login',
+  confirmingMessage: 'We are confirming this sign-in. Please keep this page open for a moment.',
+  confirmedTitle: 'Sign-in confirmed',
+  confirmedMessage: 'Return to your other device. It should now be signed in.',
+  failedTitle: 'Sign-in not confirmed',
+  failedMessage: 'This sign-in request could not be confirmed. Return to your other device and request a new link.',
+  missingSessionMessage: 'This sign-in link could not be confirmed. Request a new link and try again.',
+} as const
 export const PHONE_AUTH = {
   indiaCountryCode: '+91',
   e164Pattern: /^\+[1-9]\d{7,14}$/,
