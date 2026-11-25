@@ -21,6 +21,7 @@ class Settings:
         "SUPABASE_PUBLISHABLE_KEY",
         os.getenv("SUPABASE_ANON_KEY", ""),
     )
+    SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
     DATABASE_URL = URL.create(
         drivername="postgresql+psycopg2",
         username=DB_USER,
