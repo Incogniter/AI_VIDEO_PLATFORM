@@ -2,8 +2,8 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { FileVideo2, Upload, X } from 'lucide-react'
-import { apiClient, ApiError } from '../../api/client'
-import { API_ROUTES, UPLOAD_LIMITS } from '../../constants/app'
+import { apiClient } from '../../api/client'
+import { API_ROUTES, UPLOAD_LIMITS, USER_FACING_ERRORS } from '../../constants/app'
 import './UploadDialog.css'
 
 type Props = { open: boolean; onClose: () => void }
@@ -45,10 +45,6 @@ export default function UploadDialog({ open, onClose }: Props) {
     if (file) mutation.mutate({ file, title, description })
   }
 
-  const errorMessage = mutation.error instanceof ApiError
-    ? mutation.error.message
-    : 'The video could not be uploaded. Please try again.'
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" aria-labelledby="upload-title" PaperProps={{ className: 'upload-dialog-paper' }}>
       <form onSubmit={submit}>
@@ -78,7 +74,7 @@ export default function UploadDialog({ open, onClose }: Props) {
           </label>
 
           <p className="upload-metadata-note">Upload date and video duration are recorded by the platform when the video is processed.</p>
-          {mutation.isError && <p className="upload-error" role="alert">{errorMessage}</p>}
+          {mutation.isError && <p className="upload-error" role="alert">{USER_FACING_ERRORS.upload}</p>}
         </DialogContent>
         <DialogActions className="upload-dialog-actions">
           <Button onClick={onClose} color="inherit">Cancel</Button>
