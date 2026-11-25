@@ -4,6 +4,7 @@ export const APP_ROUTES = {
   upload: '/upload',
   inbox: '/inbox',
   profile: '/you',
+  mobileVerify: '/auth/mobile-verify',
 } as const
 
 export const APP_BRAND = 'streamline'
@@ -16,6 +17,7 @@ export const API_ROUTES = {
   currentUser: '/auth/me',
   deviceLoginRequests: '/auth/device-login-requests',
 } as const
+export const DEVICE_LOGIN = { channelPrefix: 'device-login:' } as const
 export const PHONE_AUTH = {
   indiaCountryCode: '+91',
   e164Pattern: /^\+[1-9]\d{7,14}$/,

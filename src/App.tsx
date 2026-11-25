@@ -9,10 +9,12 @@ const ExplorePage = lazy(() => import('./pages/ExplorePage/ExplorePage'))
 const PlaceholderPage = lazy(() => import('./pages/PlaceholderPage/PlaceholderPage'))
 const UploadPage = lazy(() => import('./pages/UploadPage/UploadPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage'))
+const MobileVerifyPage = lazy(() => import('./pages/MobileVerifyPage/MobileVerifyPage'))
 
 export default function App() {
   return (
     <Routes>
+      <Route path={APP_ROUTES.mobileVerify.slice(1)} element={<MobileVerifyPage />} />
       <Route element={<AppShell />}>
         <Route index element={<DiscoverPage />} />
         <Route path={APP_ROUTES.explore.slice(1)} element={<ExplorePage />} />

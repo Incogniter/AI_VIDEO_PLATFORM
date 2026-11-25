@@ -1,9 +1,10 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { ArrowLeft, Mail, Phone, X } from 'lucide-react'
 import { useAuth } from '../../auth/AuthProvider'
 import { normalizePhoneNumber } from '../../auth/phone'
 import { createDeviceLoginRequest } from '../../api/auth'
+import { listenForDeviceLogin } from '../../auth/deviceLogin'
 import { AUTH_DEVICE_LOGIN_REQUEST_KEY, USER_FACING_ERRORS } from '../../constants/app'
 import './AuthDialog.css'
 
@@ -20,14 +21,46 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const waitGeneration = useRef(0)
+  const waitController = useRef<AbortController | null>(null)
 
   function resetAndClose() {
+    waitGeneration.current += 1
+    waitController.current?.abort()
     setStep('identifier')
     setIdentifier('')
     setCode('')
     setMessage('')
     setError('')
     onClose()
+  }
+
+  async function sendEmailSignIn(email: string) {
+    const loginRequest = await createDeviceLoginRequest(email)
+    waitGeneration.current += 1
+    waitController.current?.abort()
+
+    window.sessionStorage.setItem(AUTH_DEVICE_LOGIN_REQUEST_KEY, JSON.stringify(loginRequest))
+    const controller = new AbortController()
+    waitController.current = controller
+    const listener = listenForDeviceLogin(loginRequest, controller.signal)
+
+    try {
+      await listener.ready
+      await sendMagicLink(email, loginRequest.request_id)
+    } catch (error) {
+      controller.abort()
+      throw error
+    }
+
+    setStep('link-sent')
+    setMessage(`We sent a sign-in link to ${email}. Open it on your other device. Keep this page open to finish signing in here.`)
+    const generation = ++waitGeneration.current
+    void listener.approved.then(() => {
+      if (generation === waitGeneration.current) setMessage('You are signed in. Opening your account…')
+    }).catch(() => {
+      if (generation === waitGeneration.current) setError('We could not complete this sign-in. Request a new link and try again.')
+    })
   }
 
   async function submitIdentifier(event: FormEvent<HTMLFormElement>) {
@@ -45,11 +78,7 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
     setBusy(true)
     try {
       if (method === 'email') {
-        const loginRequest = await createDeviceLoginRequest(signInIdentifier)
-        window.sessionStorage.setItem(AUTH_DEVICE_LOGIN_REQUEST_KEY, JSON.stringify(loginRequest))
-        await sendMagicLink(signInIdentifier, loginRequest.request_id)
-        setStep('link-sent')
-        setMessage(`We sent a sign-in link to ${signInIdentifier}. Open it on the device where you want to use Streamline.`)
+        await sendEmailSignIn(signInIdentifier)
       } else {
         setIdentifier(signInIdentifier)
         await sendPhoneOtp(signInIdentifier)
@@ -57,6 +86,7 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
         setMessage(`We sent a one-time code to ${signInIdentifier}.`)
       }
     } catch {
+      waitController.current?.abort()
       setError(USER_FACING_ERRORS.authSend)
     } finally {
       setBusy(false)
@@ -99,10 +129,7 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
     setError('')
     try {
       if (method === 'email') {
-        const loginRequest = await createDeviceLoginRequest(identifier.trim())
-        window.sessionStorage.setItem(AUTH_DEVICE_LOGIN_REQUEST_KEY, JSON.stringify(loginRequest))
-        await sendMagicLink(identifier.trim(), loginRequest.request_id)
-        setMessage(`A new sign-in link was sent to ${identifier.trim()}. Open it on the device where you want to use Streamline.`)
+        await sendEmailSignIn(identifier.trim())
       } else {
         const phone = normalizePhoneNumber(identifier)
         if (!phone) throw new Error('Enter a valid phone number with its country code.')
@@ -110,6 +137,7 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
         setMessage(`A new one-time code was sent to ${phone}.`)
       }
     } catch {
+      waitController.current?.abort()
       setError(USER_FACING_ERRORS.authResend)
     } finally {
       setBusy(false)
@@ -117,7 +145,7 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
   }
 
   return (
-    <Dialog open={open} onClose={resetAndClose} fullWidth maxWidth="xs" aria-labelledby="auth-dialog-title" PaperProps={{ className: 'auth-dialog-paper' }}>
+    <Dialog open={open} onClose={resetAndClose} fullWidth maxWidth="sm" aria-labelledby="auth-dialog-title" PaperProps={{ className: 'auth-dialog-paper' }}>
       <DialogTitle className="auth-dialog-title" id="auth-dialog-title">
         <span className="auth-brand"><span className="brand-mark"><span /></span>streamline</span>
         <button type="button" className="icon-button" onClick={resetAndClose} aria-label="Close sign-in"><X size={19} /></button>
@@ -151,7 +179,7 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
             </label>
             <Button type="submit" variant="contained" fullWidth disabled={!isSupabaseConfigured || !code.trim() || busy}>{busy ? 'Verifying…' : 'Verify and continue'}</Button>
           </form>}
-          {step === 'link-sent' && <p className="auth-link-instructions">Open the email and tap the sign-in link. Streamline will open and confirm your login in that browser.</p>}
+          {step === 'link-sent' && <p className="auth-link-instructions">Open the email on your other device and tap the sign-in link. This device will sign in automatically after you confirm.</p>}
           <button type="button" className="auth-resend" onClick={resendSignIn} disabled={!isSupabaseConfigured || busy}>{method === 'email' ? 'Resend sign-in link' : 'Resend code'}</button>
         </>}
         {!isSupabaseConfigured && <p className="auth-error" role="status">Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in the frontend environment to enable sign-in.</p>}

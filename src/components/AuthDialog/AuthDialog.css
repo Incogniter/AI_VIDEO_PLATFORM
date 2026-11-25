@@ -1,4 +1,6 @@
 .auth-dialog-paper {
+  width: min(calc(100vw - 32px), 480px);
+  max-height: calc(100dvh - 32px);
   color: var(--text);
   background: #131618 !important;
   border: 1px solid #303536;
@@ -27,7 +29,7 @@
 }
 
 .auth-dialog-content {
-  padding: 14px 24px 24px !important;
+  padding: 14px 28px 28px !important;
 }
 
 .auth-intro {
@@ -201,4 +203,25 @@
   font-size: 9px;
   line-height: 1.5;
   text-align: center;
+}
+
+@media (min-width: 900px) {
+  .auth-dialog-paper { width: min(calc(100vw - 48px), 520px); }
+  .auth-dialog-title { padding: 24px 30px 10px !important; }
+  .auth-dialog-content { padding: 18px 34px 34px !important; }
+  .auth-intro h2 { font-size: 26px; }
+  .auth-intro > p:last-child { font-size: 14px; }
+  .auth-form .form-field > span { font-size: 13px; }
+  .auth-form .form-field input { padding: 13px 14px; font-size: 15px; }
+  .auth-form .MuiButton-contained, .google-auth-button.MuiButton-root { min-height: 48px; font-size: 14px; }
+  .auth-method-toggle button { min-height: 40px; font-size: 13px; }
+  .auth-link-instructions { font-size: 13px; }
+  .auth-footnote { font-size: 11px; }
+}
+
+@media (max-width: 480px) {
+  .auth-dialog-paper { width: calc(100vw - 24px); margin: 12px; }
+  .auth-dialog-title { padding: 18px 18px 8px !important; }
+  .auth-dialog-content { padding: 12px 18px 22px !important; }
+  .auth-intro h2 { font-size: 21px; }
 }

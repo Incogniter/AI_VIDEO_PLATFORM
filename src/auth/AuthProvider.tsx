@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabase'
-import { AUTH_PENDING_ROUTE_KEY } from '../constants/app'
+import { APP_ROUTES } from '../constants/app'
 
 type AuthContextValue = {
   user: User | null
@@ -13,6 +13,7 @@ type AuthContextValue = {
   verifyPhoneOtp: (phone: string, token: string) => Promise<void>
   updateDisplayName: (displayName: string) => Promise<void>
   signOut: () => Promise<void>
+  signOutLocal: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -61,11 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function sendMagicLink(email: string, requestId: string) {
-    const pendingRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
-    const safePath = pendingRoute?.startsWith('/') && !pendingRoute.startsWith('//')
-      ? pendingRoute
-      : window.location.pathname
-    const redirectUrl = new URL(safePath, window.location.origin)
+    const redirectUrl = new URL(APP_ROUTES.mobileVerify, window.location.origin)
     redirectUrl.searchParams.set('deviceLoginRequestId', requestId)
     const result = await requireSupabase().auth.signInWithOtp({
       email,
@@ -102,8 +99,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
+  async function signOutLocal() {
+    const { error } = await requireSupabase().auth.signOut({ scope: 'local' })
+    if (error) throw error
+    setUser(null)
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthLoading, isSupabaseConfigured, signInWithGoogle, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, updateDisplayName, signOut }}>
+    <AuthContext.Provider value={{ user, isAuthLoading, isSupabaseConfigured, signInWithGoogle, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, updateDisplayName, signOut, signOutLocal }}>
       {children}
     </AuthContext.Provider>
   )
