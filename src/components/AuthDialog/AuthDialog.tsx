@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { ArrowLeft, Mail, Phone, X } from 'lucide-react'
 import { useAuth } from '../../auth/AuthProvider'
@@ -23,6 +23,20 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
   const [busy, setBusy] = useState(false)
   const waitGeneration = useRef(0)
   const waitController = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+    if (open) return
+    waitGeneration.current += 1
+    waitController.current?.abort()
+    waitController.current = null
+    window.sessionStorage.removeItem(AUTH_DEVICE_LOGIN_REQUEST_KEY)
+    setMethod('email')
+    setStep('identifier')
+    setIdentifier('')
+    setCode('')
+    setMessage('')
+    setError('')
+  }, [open])
 
   function resetAndClose() {
     waitGeneration.current += 1

@@ -36,6 +36,9 @@
 }
 
 .mobile-verify-mark.is-error { background: #fff0ef; color: #b42318; }
+.mobile-verify-mark.is-loading { position: relative; background: #f0f3ff; }
+.mobile-verify-mark.is-loading::after { width: 22px; height: 22px; border: 2px solid #d5dcff; border-top-color: #315efb; border-radius: 50%; content: ''; animation: mobile-verify-spin .8s linear infinite; }
+@keyframes mobile-verify-spin { to { transform: rotate(360deg); } }
 .mobile-verify-brand { margin: 0 0 12px; color: #315efb; font-size: 15px; font-weight: 750; letter-spacing: .03em; }
 .mobile-verify-card h1 { margin: 0 0 14px; color: #172033; font-size: clamp(27px, 3vw, 36px); letter-spacing: -.035em; }
 .mobile-verify-message { margin: 0; color: #667085; font-size: 16px; line-height: 1.65; }
