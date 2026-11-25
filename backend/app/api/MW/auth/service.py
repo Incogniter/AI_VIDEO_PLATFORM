@@ -1,6 +1,12 @@
+from hashlib import sha256
+from secrets import token_urlsafe
+
 import httpx
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 
@@ -60,3 +66,62 @@ def get_current_user(
         )
 
     return user
+
+
+def create_device_login_request(db: Session, email: str) -> dict[str, object]:
+    normalized_email = email.strip().lower()
+    request_secret = token_urlsafe(32)
+    request_secret_hash = sha256(request_secret.encode("utf-8")).hexdigest()
+
+    try:
+        recent_pending_request = db.execute(
+            text(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM private.device_login_requests
+                    WHERE lower(email) = :email
+                      AND status = 'pending'
+                      AND expires_at > NOW()
+                      AND created_at > NOW() - INTERVAL '1 minute'
+                )
+                """
+            ),
+            {"email": normalized_email},
+        ).scalar_one()
+
+        if recent_pending_request:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="A recent sign-in request is still active. Try again shortly.",
+            )
+
+        row = db.execute(
+            text(
+                """
+                INSERT INTO private.device_login_requests (email, request_secret_hash)
+                VALUES (:email, :request_secret_hash)
+                RETURNING id, expires_at
+                """
+            ),
+            {
+                "email": normalized_email,
+                "request_secret_hash": request_secret_hash,
+            },
+        ).mappings().one()
+        db.commit()
+    except HTTPException:
+        db.rollback()
+        raise
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Could not create a sign-in request.",
+        ) from exc
+
+    return {
+        "request_id": str(row["id"]),
+        "request_secret": request_secret,
+        "expires_at": row["expires_at"],
+    }
