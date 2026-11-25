@@ -1,16 +1,16 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from './supabase'
-
-type OtpMethod = 'email' | 'phone'
+import { AUTH_PENDING_ROUTE_KEY } from '../constants/app'
 
 type AuthContextValue = {
   user: User | null
   isAuthLoading: boolean
   isSupabaseConfigured: boolean
   signInWithGoogle: () => Promise<void>
-  sendOtp: (identifier: string, method: OtpMethod) => Promise<void>
-  verifyOtp: (identifier: string, method: OtpMethod, token: string) => Promise<void>
+  sendMagicLink: (email: string) => Promise<void>
+  sendPhoneOtp: (phone: string) => Promise<void>
+  verifyPhoneOtp: (phone: string, token: string) => Promise<void>
   updateDisplayName: (displayName: string) => Promise<void>
   signOut: () => Promise<void>
 }
@@ -60,19 +60,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error
   }
 
-  async function sendOtp(identifier: string, method: OtpMethod) {
-    const client = requireSupabase()
-    const result = method === 'email'
-      ? await client.auth.signInWithOtp({ email: identifier, options: { shouldCreateUser: true } })
-      : await client.auth.signInWithOtp({ phone: identifier, options: { shouldCreateUser: true } })
+  async function sendMagicLink(email: string) {
+    const pendingRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
+    const safePath = pendingRoute?.startsWith('/') && !pendingRoute.startsWith('//')
+      ? pendingRoute
+      : window.location.pathname
+    const emailRedirectTo = new URL(safePath, window.location.origin).toString()
+    const result = await requireSupabase().auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo, shouldCreateUser: true },
+    })
     if (result.error) throw result.error
   }
 
-  async function verifyOtp(identifier: string, method: OtpMethod, token: string) {
-    const client = requireSupabase()
-    const result = method === 'email'
-      ? await client.auth.verifyOtp({ email: identifier, token, type: 'email' })
-      : await client.auth.verifyOtp({ phone: identifier, token, type: 'sms' })
+  async function sendPhoneOtp(phone: string) {
+    const result = await requireSupabase().auth.signInWithOtp({
+      phone,
+      options: { shouldCreateUser: true },
+    })
+    if (result.error) throw result.error
+  }
+
+  async function verifyPhoneOtp(phone: string, token: string) {
+    const result = await requireSupabase().auth.verifyOtp({ phone, token, type: 'sms' })
     if (result.error) throw result.error
     setUser(result.data.user)
   }
@@ -92,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthLoading, isSupabaseConfigured, signInWithGoogle, sendOtp, verifyOtp, updateDisplayName, signOut }}>
+    <AuthContext.Provider value={{ user, isAuthLoading, isSupabaseConfigured, signInWithGoogle, sendMagicLink, sendPhoneOtp, verifyPhoneOtp, updateDisplayName, signOut }}>
       {children}
     </AuthContext.Provider>
   )

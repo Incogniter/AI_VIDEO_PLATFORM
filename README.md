@@ -10,7 +10,7 @@ npm.cmd install
 
 Use `.env.example` as a template for a fresh local `.env`. Set `VITE_API_BASE_URL`, `VITE_SUPABASE_URL`, and `VITE_SUPABASE_PUBLISHABLE_KEY`. The ignored local `.env` is configured for the current Supabase project. The publishable key is intended for browser clients; do not put a service-role key in the frontend.
 
-In Supabase Auth settings, enable Google and Phone providers, configure Google OAuth credentials, and add the local and deployed frontend origins to the redirect allow list. Configure the email template to include the OTP token (`{{ .Token }}`) and connect an SMS provider for phone codes.
+In Supabase Auth settings, enable Google and Phone providers, configure Google OAuth credentials, and add the local and deployed frontend origins to the redirect allow list. Keep the Magic Link email template configured with `{{ .ConfirmationURL }}` so email sign-in sends a link; phone sign-in continues to use an SMS OTP. Connect an SMS provider for phone codes.
 
 The React app reads the Supabase session and attaches its access token to API requests through the Axios request interceptor. MW validates protected requests with Supabase Auth at `GET /auth/me`.
 

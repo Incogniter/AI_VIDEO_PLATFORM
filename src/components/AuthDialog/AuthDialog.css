@@ -177,6 +177,17 @@
   color: var(--lime);
 }
 
+.auth-link-instructions {
+  margin: 14px 0 0;
+  padding: 11px 12px;
+  border: 1px solid #343a38;
+  border-radius: 8px;
+  color: #c5ccc6;
+  background: #0e1011;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
 .auth-error {
   margin: 14px 0 0;
   color: #ffaaa4;
