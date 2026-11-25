@@ -178,9 +178,9 @@ def _broadcast_approval(request_id: UUID) -> None:
     for attempt in range(3):
         try:
             response = httpx.post(
-                f"{settings.SUPABASE_URL}/realtime/v1/api/broadcast",
+                f"{settings.SUPABASE_URL}/realtime/v1/api/broadcast/device-login:{request_id}/events/approved?private=false",
                 headers={"apikey": settings.SUPABASE_PUBLISHABLE_KEY, "Content-Type": "application/json"},
-                json={"messages": [{"topic": f"device-login:{request_id}", "event": "approved", "payload": {"status": "approved"}}]},
+                json={"status": "approved"},
                 timeout=5.0,
             )
             response.raise_for_status()
