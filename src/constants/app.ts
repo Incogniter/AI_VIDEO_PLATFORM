@@ -27,6 +27,7 @@ export const AUTH_CALLBACK_COPY = {
   failedMessage: 'This sign-in request could not be confirmed. Return to your other device and request a new link.',
   missingSessionMessage: 'This sign-in link could not be confirmed. Request a new link and try again.',
 } as const
+export const AUTH_CALLBACK_SESSION_WAIT_MS = 15_000
 export const PHONE_AUTH = {
   indiaCountryCode: '+91',
   e164Pattern: /^\+[1-9]\d{7,14}$/,
