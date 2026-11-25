@@ -479,5 +479,28 @@
 .mobile-nav-button {
   border: 0;
   background: transparent;
-  font: inherit;
+  color: var(--lime);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.mobile-nav-button svg {
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+  border: 1px solid #c7f36b55;
+  border-radius: 8px;
+  background: #c7f36b12;
+  transition: background-color .16s ease, transform .16s ease;
+}
+
+.mobile-nav-button:active svg {
+  transform: scale(.94);
+  background: #c7f36b24;
+}
+
+.mobile-nav-button:focus-visible {
+  border-radius: 8px;
+  outline: 2px solid var(--lime);
+  outline-offset: -2px;
 }
