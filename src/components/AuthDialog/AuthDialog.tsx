@@ -3,6 +3,8 @@ import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { ArrowLeft, Mail, Phone, X } from 'lucide-react'
 import { useAuth } from '../../auth/AuthProvider'
 import { normalizePhoneNumber } from '../../auth/phone'
+import { createDeviceLoginRequest } from '../../api/auth'
+import { AUTH_DEVICE_LOGIN_REQUEST_KEY, USER_FACING_ERRORS } from '../../constants/app'
 import './AuthDialog.css'
 
 type Props = { open: boolean; onClose: () => void; onAuthenticated: () => void }
@@ -36,14 +38,16 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
       ? normalizePhoneNumber(identifier)
       : identifier.trim()
     if (!signInIdentifier) {
-      setError('Enter a 10-digit Indian mobile number or an international number with its country code, such as +919876543210.')
+      setError('Enter a number with its country code.' )
       return
     }
 
     setBusy(true)
     try {
       if (method === 'email') {
-        await sendMagicLink(signInIdentifier)
+        const loginRequest = await createDeviceLoginRequest(signInIdentifier)
+        window.sessionStorage.setItem(AUTH_DEVICE_LOGIN_REQUEST_KEY, JSON.stringify(loginRequest))
+        await sendMagicLink(signInIdentifier, loginRequest.request_id)
         setStep('link-sent')
         setMessage(`We sent a sign-in link to ${signInIdentifier}. Open it on the device where you want to use Streamline.`)
       } else {
@@ -52,8 +56,8 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
         setStep('code')
         setMessage(`We sent a one-time code to ${signInIdentifier}.`)
       }
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not send a sign-in code.')
+    } catch {
+      setError(USER_FACING_ERRORS.authSend)
     } finally {
       setBusy(false)
     }
@@ -70,8 +74,8 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
       setStep('identifier')
       setCode('')
       setMessage('')
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'That code could not be verified.')
+    } catch {
+      setError(USER_FACING_ERRORS.authVerify)
     } finally {
       setBusy(false)
     }
@@ -83,8 +87,8 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
     setError('')
     try {
       await signInWithGoogle()
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Google sign-in could not be started.')
+    } catch {
+      setError(USER_FACING_ERRORS.authGoogle)
       setBusy(false)
     }
   }
@@ -95,7 +99,9 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
     setError('')
     try {
       if (method === 'email') {
-        await sendMagicLink(identifier.trim())
+        const loginRequest = await createDeviceLoginRequest(identifier.trim())
+        window.sessionStorage.setItem(AUTH_DEVICE_LOGIN_REQUEST_KEY, JSON.stringify(loginRequest))
+        await sendMagicLink(identifier.trim(), loginRequest.request_id)
         setMessage(`A new sign-in link was sent to ${identifier.trim()}. Open it on the device where you want to use Streamline.`)
       } else {
         const phone = normalizePhoneNumber(identifier)
@@ -103,8 +109,8 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
         await sendPhoneOtp(phone)
         setMessage(`A new one-time code was sent to ${phone}.`)
       }
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not resend the sign-in code.')
+    } catch {
+      setError(USER_FACING_ERRORS.authResend)
     } finally {
       setBusy(false)
     }
@@ -131,7 +137,7 @@ export function AuthDialog({ open, onClose, onAuthenticated }: Props) {
             <label className="form-field">
               <span>{method === 'email' ? 'Email address' : 'Phone number'}</span>
               <input type={method === 'email' ? 'email' : 'tel'} inputMode={method === 'email' ? 'email' : 'tel'} autoComplete={method === 'email' ? 'email' : 'tel'} placeholder={method === 'email' ? 'you@example.com' : '+91 98765 43210'} value={identifier} onChange={(event) => setIdentifier(event.target.value)} required disabled={!isSupabaseConfigured} />
-              {method === 'phone' && <small>Enter 10 Indian mobile digits or a number with its country code. We format it for Supabase.</small>}
+              {method === 'phone' && <small>Enter a number with its country code.</small>}
             </label>
             <Button type="submit" variant="contained" fullWidth disabled={!isSupabaseConfigured || !identifier.trim() || busy}>{busy ? 'Sending…' : method === 'email' ? 'Email me a sign-in link' : 'Send one-time code'}</Button>
           </form>

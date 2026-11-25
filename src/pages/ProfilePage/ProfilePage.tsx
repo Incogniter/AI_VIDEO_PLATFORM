@@ -5,7 +5,7 @@ import { getCurrentBackendUser } from '../../api/auth'
 import { useAuth } from '../../auth/AuthProvider'
 import { useAuthDialog } from '../../auth/AuthDialogProvider'
 import { getDisplayName } from '../../auth/profile'
-import { APP_ROUTES } from '../../constants/app'
+import { APP_ROUTES, USER_FACING_ERRORS } from '../../constants/app'
 import UserAvatar from '../../components/UserAvatar/UserAvatar'
 import PageSkeleton from '../../components/PageSkeleton/PageSkeleton'
 import './ProfilePage.css'
@@ -35,8 +35,8 @@ export default function ProfilePage() {
     try {
       await updateDisplayName(name)
       setNotice('Your profile name has been updated.')
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not update your profile.')
+    } catch {
+      setError(USER_FACING_ERRORS.profileUpdate)
     } finally {
       setBusy(false)
     }
@@ -47,8 +47,8 @@ export default function ProfilePage() {
     setError('')
     try {
       await signOut()
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not sign out.')
+    } catch {
+      setError(USER_FACING_ERRORS.signOut)
     } finally {
       setBusy(false)
     }

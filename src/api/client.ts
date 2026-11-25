@@ -2,6 +2,7 @@ import axios from 'axios'
 import { API_BASE_URL } from '../constants/app'
 import { getApiBaseUrl } from '../config/api'
 import { supabase } from '../auth/supabase'
+import { USER_FACING_ERRORS } from '../constants/app'
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -39,14 +40,10 @@ apiClient.interceptors.request.use(async (config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
-    if (axios.isAxiosError<{ detail?: string; message?: string }>(error)) {
-      const message = error.response?.data?.detail
-        || error.response?.data?.message
-        || error.message
-        || 'The API request failed.'
-      return Promise.reject(new ApiError(message, error.response?.status))
+    if (axios.isAxiosError(error)) {
+      return Promise.reject(new ApiError(USER_FACING_ERRORS.apiRequest, error.response?.status))
     }
 
-    return Promise.reject(new ApiError('An unexpected API error occurred.'))
+    return Promise.reject(new ApiError(USER_FACING_ERRORS.apiRequest))
   },
 )

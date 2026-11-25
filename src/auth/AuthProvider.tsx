@@ -8,7 +8,7 @@ type AuthContextValue = {
   isAuthLoading: boolean
   isSupabaseConfigured: boolean
   signInWithGoogle: () => Promise<void>
-  sendMagicLink: (email: string) => Promise<void>
+  sendMagicLink: (email: string, requestId: string) => Promise<void>
   sendPhoneOtp: (phone: string) => Promise<void>
   verifyPhoneOtp: (phone: string, token: string) => Promise<void>
   updateDisplayName: (displayName: string) => Promise<void>
@@ -60,15 +60,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error
   }
 
-  async function sendMagicLink(email: string) {
+  async function sendMagicLink(email: string, requestId: string) {
     const pendingRoute = window.sessionStorage.getItem(AUTH_PENDING_ROUTE_KEY)
     const safePath = pendingRoute?.startsWith('/') && !pendingRoute.startsWith('//')
       ? pendingRoute
       : window.location.pathname
-    const emailRedirectTo = new URL(safePath, window.location.origin).toString()
+    const redirectUrl = new URL(safePath, window.location.origin)
+    redirectUrl.searchParams.set('deviceLoginRequestId', requestId)
     const result = await requireSupabase().auth.signInWithOtp({
       email,
-      options: { emailRedirectTo, shouldCreateUser: true },
+      options: { emailRedirectTo: redirectUrl.toString(), shouldCreateUser: true },
     })
     if (result.error) throw result.error
   }

@@ -8,6 +8,17 @@ export type BackendUser = {
   user_metadata: Record<string, unknown>
 }
 
+export type DeviceLoginRequest = {
+  request_id: string
+  request_secret: string
+  expires_at: string
+}
+
+export async function createDeviceLoginRequest(email: string) {
+  const response = await apiClient.post<DeviceLoginRequest>(API_ROUTES.deviceLoginRequests, { email })
+  return response.data
+}
+
 export async function getCurrentBackendUser() {
   const response = await apiClient.get<BackendUser>(API_ROUTES.currentUser)
   return response.data
